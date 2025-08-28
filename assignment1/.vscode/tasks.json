@@ -1,0 +1,47 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "cppbuild",
+      "label": "C/C++: cl.exe build active file",
+      "command": "powershell.exe",
+      "args": [
+        "-Command",
+        "if (!(Test-Path -Path '${fileDirname}\\obj')) { New-Item -ItemType Directory -Path '${fileDirname}\\obj' }; if (!(Test-Path -Path '${fileDirname}\\bin')) { New-Item -ItemType Directory -Path '${fileDirname}\\bin' }; cl.exe /Zi /EHsc /nologo /Fo${fileDirname}\\obj\\ /Fd${fileDirname}\\obj\\ /Fe${fileDirname}\\bin\\${fileBasenameNoExtension}.exe ${file}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": [
+        "$msCompile"
+      ],
+      "group": "build",
+      "detail": "compiler: cl.exe",
+      "presentation": {
+        "echo": true,
+        "focus": false,
+        "panel": "shared",
+        "reveal": "silent",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "dependsOn": [
+        "check-for-changes"
+      ]
+    },
+    {
+      "label": "check-for-changes",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": [
+        "-Command",
+        "if ((Get-ChildItem -Path '${fileDirname}' -Filter *.cpp).LastWriteTime -gt (Get-ChildItem -Path '${fileDirname}\\bin' -Filter *.exe).LastWriteTime) { exit 0 } else { exit 1 }"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    }
+  ]
+}
